@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dotnet_web_api.Services.CharacterService;
 
 namespace dotnet_web_api
 {
@@ -28,6 +29,7 @@ namespace dotnet_web_api
         {
 
             services.AddControllers();
+            services.AddScoped<ICharacterService, CharacterService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "dotnet_web_api", Version = "v1" });
