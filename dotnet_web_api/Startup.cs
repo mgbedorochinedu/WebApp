@@ -29,6 +29,7 @@ namespace dotnet_web_api
         {
 
             services.AddControllers();
+            services.AddAutoMapper(typeof(Startup));
             services.AddScoped<ICharacterService, CharacterService>();
             services.AddSwaggerGen(c =>
             {
