@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using dotnet_web_api.Data;
 using dotnet_web_api.Dtos.Character;
 using dotnet_web_api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_web_api.Services.CharacterService
 {
     public class CharacterService : ICharacterService
     {
         private readonly IMapper _mapper;
+        private readonly DataContext _db;
 
-        public CharacterService(IMapper mapper)
+        public CharacterService(IMapper mapper, DataContext db)
         {
             _mapper = mapper;
+            _db = db;
         }
         private static List<Character> characters = new List<Character>
         {
@@ -22,13 +26,14 @@ namespace dotnet_web_api.Services.CharacterService
             new Character{ Id = 1, Name = "Chinedu"}
 
         };
-        public async Task<ServiceResponse<GetCharacterDto>> AddCharacters(CreateCharacterDto newCharacter)
+        public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacters(CreateCharacterDto newCharacter)
         {
-            ServiceResponse<GetCharacterDto> serviceResponse = new ServiceResponse<GetCharacterDto>();
-            
-            characters.Add(_mapper.Map<Character>(newCharacter));
-            serviceResponse.Data = _mapper.Map<GetCharacterDto>(characters);
-            //serviceResponse.Data = characters;
+            ServiceResponse<List<GetCharacterDto>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+            Character character = _mapper.Map<Character>(newCharacter);
+            await _db.Characters.AddAsync(character);
+            await _db.SaveChangesAsync();
+           // _mapper.Map<List<GetCharacterDto>>(character).ToList();
+            //serviceResponse.Data = (_db.Characters.Select(c =>  _mapper.Map<GetCharacterDto>(c))).ToList();
             serviceResponse.Message = "Added Successfully";
             return serviceResponse;
         }
@@ -46,7 +51,8 @@ namespace dotnet_web_api.Services.CharacterService
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacter()
         {
             ServiceResponse<List<GetCharacterDto>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            List<Character> dbCharacters = await _db.Characters.ToListAsync();
+            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             serviceResponse.Message = "Successfully fetched all characters";
             return serviceResponse;
 
@@ -55,7 +61,9 @@ namespace dotnet_web_api.Services.CharacterService
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             ServiceResponse<GetCharacterDto> serviceResponse = new ServiceResponse<GetCharacterDto>();
-            serviceResponse.Data = _mapper.Map<GetCharacterDto>(characters.FirstOrDefault(c => c.Id == id));
+            Character DbCharacter = await _db.Characters.FirstOrDefaultAsync(x => x.Id == id);
+            serviceResponse.Data = _mapper.Map<GetCharacterDto>(DbCharacter);
+            serviceResponse.Message = "Successfully fetch single character";
             return serviceResponse;
 
         }
@@ -112,5 +120,6 @@ namespace dotnet_web_api.Services.CharacterService
             return serviceResponse;
 
         }
+
     }
 }
