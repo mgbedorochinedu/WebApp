@@ -20,12 +20,6 @@ namespace dotnet_web_api.Services.CharacterService
             _mapper = mapper;
             _db = db;
         }
-        private static List<Character> characters = new List<Character>
-        {
-            new Character(),
-            new Character{ Id = 1, Name = "Chinedu"}
-
-        };
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacters(CreateCharacterDto newCharacter)
         {
             ServiceResponse<List<GetCharacterDto>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
@@ -89,10 +83,10 @@ namespace dotnet_web_api.Services.CharacterService
                 serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = "Character not found";
+                serviceResponse.Message = ex.Message;
             }
 
            
@@ -106,20 +100,19 @@ namespace dotnet_web_api.Services.CharacterService
             ServiceResponse<List<GetCharacterDto>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             try
             {
-                Character character = characters.FirstOrDefault(c => c.Id == id);
+                Character character = await _db.Characters.FirstOrDefaultAsync(c => c.Id == id);
 
-                characters.Remove(character);
+                _db.Characters.Remove(character);
+                await _db.SaveChangesAsync();
 
-                serviceResponse.Data = (characters.Select(x => _mapper.Map<GetCharacterDto>(x))).ToList();
+                serviceResponse.Data = _db.Characters.Select(x => _mapper.Map<GetCharacterDto>(x)).ToList();
             }
-            catch (Exception e) 
+            catch (Exception ex) 
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = "Character not found";
+                serviceResponse.Message = ex.Message;
             }
-
-
-
+            
             return serviceResponse;
 
         }
