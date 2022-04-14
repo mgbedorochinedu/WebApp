@@ -61,8 +61,8 @@ namespace dotnet_web_api.Services.CharacterService
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             ServiceResponse<GetCharacterDto> serviceResponse = new ServiceResponse<GetCharacterDto>();
-            Character DbCharacter = await _db.Characters.FirstOrDefaultAsync(x => x.Id == id);
-            serviceResponse.Data = _mapper.Map<GetCharacterDto>(DbCharacter);
+            Character dbCharacter = await _db.Characters.FirstOrDefaultAsync(x => x.Id == id);
+            serviceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter);
             serviceResponse.Message = "Successfully fetch single character";
             return serviceResponse;
 
@@ -74,7 +74,7 @@ namespace dotnet_web_api.Services.CharacterService
             ServiceResponse<GetCharacterDto> serviceResponse = new ServiceResponse<GetCharacterDto>();
             try
             {
-                Character character = characters.FirstOrDefault(c => c.Id == updateCharacter.Id);
+                Character character = await _db.Characters.FirstOrDefaultAsync(c => c.Id == updateCharacter.Id);
 
                 character.Name = updateCharacter.Name;
                 character.Class = updateCharacter.Class;
@@ -82,6 +82,9 @@ namespace dotnet_web_api.Services.CharacterService
                 character.HitPoints = updateCharacter.HitPoints;
                 character.Intelligence = updateCharacter.Intelligence;
                 character.Strength = updateCharacter.Strength;
+
+                _db.Characters.Update(character);
+                await _db.SaveChangesAsync();
 
                 serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
 
