@@ -34,6 +34,8 @@ namespace dotnet_web_api
             services.AddControllers();
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<ICharacterService, CharacterService>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "dotnet_web_api", Version = "v1" });

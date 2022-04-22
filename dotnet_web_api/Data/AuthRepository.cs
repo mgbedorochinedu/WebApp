@@ -36,6 +36,7 @@ namespace dotnet_web_api.Data
             await _db.SaveChangesAsync();
 
             response.Data = user.Id;
+            response.Message = "User registration successful.";
             return response;
         }
 
