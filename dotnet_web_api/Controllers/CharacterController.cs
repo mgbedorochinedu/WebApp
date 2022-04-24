@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using dotnet_web_api.Dtos.Character;
 using dotnet_web_api.Models;
 using dotnet_web_api.Services.CharacterService;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_web_api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CharacterController : ControllerBase

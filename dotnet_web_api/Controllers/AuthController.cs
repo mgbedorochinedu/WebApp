@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using dotnet_web_api.Data;
 using dotnet_web_api.Dtos.User;
 using dotnet_web_api.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_web_api.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
