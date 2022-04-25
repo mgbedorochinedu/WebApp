@@ -26,26 +26,17 @@ namespace dotnet_web_api.Services.CharacterService
             Character character = _mapper.Map<Character>(newCharacter);
             await _db.Characters.AddAsync(character);
             await _db.SaveChangesAsync();
-           // _mapper.Map<List<GetCharacterDto>>(character).ToList();
             //serviceResponse.Data = (_db.Characters.Select(c =>  _mapper.Map<GetCharacterDto>(c))).ToList();
             serviceResponse.Message = "Added Successfully";
             return serviceResponse;
         }
 
 
-        //public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacters(Character newCharacter)
-        //{
-        //    ServiceResponse<List<Character>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-        //    characters.Add(newCharacter);
-        //    serviceResponse.Data = characters;
-        //    return serviceResponse;
-        //}
 
-
-        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacter()
+        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacter(int userId)
         {
             ServiceResponse<List<GetCharacterDto>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            List<Character> dbCharacters = await _db.Characters.ToListAsync();
+            List<Character> dbCharacters = await _db.Characters.Where(x => x.Users.Id == userId).ToListAsync();
             serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             serviceResponse.Message = "Successfully fetched all characters";
             return serviceResponse;
