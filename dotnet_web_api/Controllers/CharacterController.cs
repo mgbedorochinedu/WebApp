@@ -33,9 +33,7 @@ namespace dotnet_web_api.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAllCharacter()
         {
-            int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-           return Ok(await _characterService.GetAllCharacter(userId));
-
+            return Ok(await _characterService.GetAllCharacter());
         }
         [HttpPost]
         public async Task<IActionResult> AddCharacter(CreateCharacterDto newCharacter)

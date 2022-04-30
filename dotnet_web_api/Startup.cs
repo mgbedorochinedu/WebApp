@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using dotnet_web_api.Data;
 using dotnet_web_api.Services.CharacterService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -48,6 +49,7 @@ namespace dotnet_web_api
                         ValidateIssuer = false,
                         ValidateAudience = false
                     });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             //services.AddSwaggerGen(c =>
             //{
