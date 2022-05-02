@@ -47,7 +47,6 @@ namespace dotnet_web_api.Services.CharacterService
         }
 
 
-
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacter()
         {
             ServiceResponse<List<GetCharacterDto>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
@@ -57,6 +56,7 @@ namespace dotnet_web_api.Services.CharacterService
             return serviceResponse;
 
         }
+
 
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
@@ -74,19 +74,28 @@ namespace dotnet_web_api.Services.CharacterService
             ServiceResponse<GetCharacterDto> serviceResponse = new ServiceResponse<GetCharacterDto>();
             try
             {
-                Character character = await _db.Characters.FirstOrDefaultAsync(c => c.Id == updateCharacter.Id && c.Users.Id.Equals(GetUserId()));
+                Character character = await _db.Characters.Include(u => u.Users).FirstOrDefaultAsync(c => c.Id == updateCharacter.Id && c.Users.Id.Equals(GetUserId()));
+                if (character.Users.Id.Equals(GetUserId()))
+                {
+                    character.Name = updateCharacter.Name;
+                    character.Class = updateCharacter.Class;
+                    character.Defense = updateCharacter.Defense;
+                    character.HitPoints = updateCharacter.HitPoints;
+                    character.Intelligence = updateCharacter.Intelligence;
+                    character.Strength = updateCharacter.Strength;
 
-                character.Name = updateCharacter.Name;
-                character.Class = updateCharacter.Class;
-                character.Defense = updateCharacter.Defense;
-                character.HitPoints = updateCharacter.HitPoints;
-                character.Intelligence = updateCharacter.Intelligence;
-                character.Strength = updateCharacter.Strength;
+                    _db.Characters.Update(character);
+                    await _db.SaveChangesAsync();
 
-                _db.Characters.Update(character);
-                await _db.SaveChangesAsync();
-
-                serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+                    serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+                    serviceResponse.Message = "Character updated successfully";
+                }
+                else
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Character not found.";
+                }
+              
 
             }
             catch (Exception ex)
@@ -95,11 +104,10 @@ namespace dotnet_web_api.Services.CharacterService
                 serviceResponse.Message = ex.Message;
             }
 
-           
-
             return serviceResponse;
 
         }
+
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
         {
