@@ -74,7 +74,10 @@ namespace dotnet_web_api.Services.CharacterService
             ServiceResponse<GetCharacterDto> serviceResponse = new ServiceResponse<GetCharacterDto>();
             try
             {
-                Character character = await _db.Characters.Include(u => u.Users).FirstOrDefaultAsync(c => c.Id == updateCharacter.Id && c.Users.Id.Equals(GetUserId()));
+                Character character = await _db.Characters.Include(u => u.Users).
+                    FirstOrDefaultAsync(c => c.Id == updateCharacter.Id && c.Users.Id.Equals(GetUserId()));
+
+
                 if (character.Users.Id.Equals(GetUserId()))
                 {
                     character.Name = updateCharacter.Name;
@@ -94,6 +97,7 @@ namespace dotnet_web_api.Services.CharacterService
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Character not found.";
+                    return serviceResponse;
                 }
               
 

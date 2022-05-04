@@ -24,25 +24,25 @@ namespace dotnet_web_api.Controllers
             _characterService = characterService;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAllCharacter(int id)
+        [HttpGet("get-character-by-id/{id}")]
+        public async Task<IActionResult> GetCharacter(int id)
         {
             return Ok(await _characterService.GetCharacterById(id));
 
         }
-        [HttpGet("GetAll")]
+        [HttpGet("get-all-character")]
         public async Task<IActionResult> GetAllCharacter()
         {
             return Ok(await _characterService.GetAllCharacter());
         }
-        [HttpPost]
+        [HttpPost("add-character")]
         public async Task<IActionResult> AddCharacter(CreateCharacterDto newCharacter)
         {
              return Ok(await _characterService.AddCharacters(newCharacter));
 
         }
 
-        [HttpPut]
+        [HttpPut("update-character")]
         public async Task<IActionResult> UpdateCharacter(UpdateCharacterDto updateCharacter)
         {
             ServiceResponse<GetCharacterDto> response = await _characterService.UpdateCharacter(updateCharacter);
@@ -53,7 +53,7 @@ namespace dotnet_web_api.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete-character/{id}")]
         public async Task<IActionResult> DeleteCharacter(int id)
         {
             ServiceResponse<List<GetCharacterDto>> response = await _characterService.DeleteCharacter(id);

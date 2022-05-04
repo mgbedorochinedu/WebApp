@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using dotnet_web_api.Data;
 using dotnet_web_api.Services.CharacterService;
+using dotnet_web_api.Services.WeaponService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,7 @@ namespace dotnet_web_api
                         ValidateAudience = false
                     });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IWeaponService, WeaponService>();
 
             //services.AddSwaggerGen(c =>
             //{
