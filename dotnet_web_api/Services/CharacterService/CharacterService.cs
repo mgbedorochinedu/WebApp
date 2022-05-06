@@ -61,7 +61,11 @@ namespace dotnet_web_api.Services.CharacterService
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             ServiceResponse<GetCharacterDto> serviceResponse = new ServiceResponse<GetCharacterDto>();
-            Character dbCharacter = await _db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.Users.Id == GetUserId());
+            Character dbCharacter = await _db.Characters
+                .Include(w => w.Weapon)
+                .Include(cs => cs.CharacterSkills)
+                .ThenInclude(s => s.Skill)
+                .FirstOrDefaultAsync(c => c.Id == id && c.Users.Id == GetUserId());
             serviceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter);
             serviceResponse.Message = "Successfully fetch single character";
             return serviceResponse;

@@ -68,7 +68,7 @@ namespace dotnet_web_api.Services.WeaponService
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ex.Message;
+                response.Message = ex.InnerException.Message;
             }
 
             return response;
