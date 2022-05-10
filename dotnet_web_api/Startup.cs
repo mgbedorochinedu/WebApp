@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using dotnet_web_api.Data;
 using dotnet_web_api.Services.CharacterService;
 using dotnet_web_api.Services.CharacterSkillService;
+using dotnet_web_api.Services.FightService;
 using dotnet_web_api.Services.WeaponService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -54,6 +55,7 @@ namespace dotnet_web_api
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IWeaponService, WeaponService>();
             services.AddScoped<ICharacterSkillService, CharacterSkillService>();
+            services.AddScoped<IFightService, FightService>();
 
             //services.AddSwaggerGen(c =>
             //{

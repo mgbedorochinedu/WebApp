@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using dotnet_web_api.Dtos.Character;
 using dotnet_web_api.Dtos.CharacterSkill;
+using dotnet_web_api.Dtos.Fight;
 using dotnet_web_api.Dtos.Skill;
 using dotnet_web_api.Dtos.Weapon;
 using dotnet_web_api.Models;
@@ -25,6 +26,8 @@ namespace dotnet_web_api.AutoMapper
             CreateMap<AddWeaponDto, Weapon>().ReverseMap();
             CreateMap<Skill, GetSkillDto>().ReverseMap();
             //CreateMap<CharacterSkill, AddCharacterSkillDto>().ReverseMap();    //CharacterSkill: First Approach
+
+            CreateMap<Character, HighScoreDto>().ReverseMap();
 
 
         }
