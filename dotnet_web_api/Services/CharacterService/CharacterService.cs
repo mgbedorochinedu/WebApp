@@ -31,7 +31,10 @@ namespace dotnet_web_api.Services.CharacterService
         //Get claims user by Id
         private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-        
+        //Get claims user by Id
+        private string GetUserRole() => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+
+
 
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacters(CreateCharacterDto newCharacter)
@@ -50,7 +53,10 @@ namespace dotnet_web_api.Services.CharacterService
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacter()
         {
             ServiceResponse<List<GetCharacterDto>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            List<Character> dbCharacters = await _db.Characters.Where(x => x.Users.Username == GetUsername()).ToListAsync();
+            List<Character> dbCharacters =
+                GetUserRole().Equals("Admin") ? 
+                    await _db.Characters.ToListAsync() :
+                    await _db.Characters.Where(x => x.Users.Username == GetUsername()).ToListAsync();
             serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             serviceResponse.Message = "Successfully fetched all characters";
             return serviceResponse;
