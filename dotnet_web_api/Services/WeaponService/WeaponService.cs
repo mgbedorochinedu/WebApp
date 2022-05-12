@@ -41,7 +41,7 @@ namespace dotnet_web_api.Services.WeaponService
 
             try
             {
-                Character dbCharacter = await _db.Characters.FirstOrDefaultAsync(c => c.Id == neWeaponDto.CharacterId && c.Users.Id == GetUserId());
+                Character dbCharacter = await _db.Characters.FirstOrDefaultAsync(c => c.Id == neWeaponDto.CharacterId && c.User.Id == GetUserId());
 
                 if (dbCharacter == null)
                 {

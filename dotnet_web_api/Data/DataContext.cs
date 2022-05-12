@@ -28,6 +28,27 @@ namespace dotnet_web_api.Data
             modelBuilder.Entity<User>()
                 .Property(user => user.Role).HasDefaultValue("Player");
 
+            modelBuilder.Entity<Skill>().HasData(
+                new Skill
+                {
+                    Id = 1,
+                    Name = "Fireball",
+                    Damage = 30
+                },
+                new Skill
+                {
+                    Id = 2,
+                    Name = "Frenzy",
+                    Damage = 20
+                },
+                new Skill
+                {
+                    Id = 3,
+                    Name = "Blizzard",
+                    Damage = 40
+                }
+            );
+
         }
 
 

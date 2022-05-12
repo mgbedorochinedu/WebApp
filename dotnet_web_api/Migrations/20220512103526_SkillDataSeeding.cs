@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dotnet_web_api.Migrations
 {
-    public partial class Initial : Migration
+    public partial class SkillDataSeeding : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,7 +49,7 @@ namespace dotnet_web_api.Migrations
                     Defense = table.Column<int>(type: "INTEGER", nullable: false),
                     Intelligence = table.Column<int>(type: "INTEGER", nullable: false),
                     Class = table.Column<int>(type: "INTEGER", nullable: false),
-                    UsersId = table.Column<int>(type: "INTEGER", nullable: true),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
                     Fights = table.Column<int>(type: "INTEGER", nullable: false),
                     Victories = table.Column<int>(type: "INTEGER", nullable: false),
                     Defeats = table.Column<int>(type: "INTEGER", nullable: false)
@@ -58,11 +58,11 @@ namespace dotnet_web_api.Migrations
                 {
                     table.PrimaryKey("PK_Characters", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Characters_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_Characters_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -110,10 +110,25 @@ namespace dotnet_web_api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Skills",
+                columns: new[] { "Id", "Damage", "Name" },
+                values: new object[] { 1, 30, "Fireball" });
+
+            migrationBuilder.InsertData(
+                table: "Skills",
+                columns: new[] { "Id", "Damage", "Name" },
+                values: new object[] { 2, 20, "Frenzy" });
+
+            migrationBuilder.InsertData(
+                table: "Skills",
+                columns: new[] { "Id", "Damage", "Name" },
+                values: new object[] { 3, 40, "Blizzard" });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Characters_UsersId",
+                name: "IX_Characters_UserId",
                 table: "Characters",
-                column: "UsersId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CharacterSkills_SkillId",

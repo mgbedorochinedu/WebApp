@@ -9,8 +9,8 @@ using dotnet_web_api.Data;
 namespace dotnet_web_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220512013325_Initial")]
-    partial class Initial
+    [Migration("20220512103526_SkillDataSeeding")]
+    partial class SkillDataSeeding
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -48,7 +48,7 @@ namespace dotnet_web_api.Migrations
                     b.Property<int>("Strength")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("UsersId")
+                    b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Victories")
@@ -56,7 +56,7 @@ namespace dotnet_web_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Characters");
                 });
@@ -91,6 +91,26 @@ namespace dotnet_web_api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Skills");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Damage = 30,
+                            Name = "Fireball"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Damage = 20,
+                            Name = "Frenzy"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Damage = 40,
+                            Name = "Blizzard"
+                        });
                 });
 
             modelBuilder.Entity("dotnet_web_api.Models.User", b =>
@@ -144,11 +164,13 @@ namespace dotnet_web_api.Migrations
 
             modelBuilder.Entity("dotnet_web_api.Models.Character", b =>
                 {
-                    b.HasOne("dotnet_web_api.Models.User", "Users")
+                    b.HasOne("dotnet_web_api.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UsersId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Users");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("dotnet_web_api.Models.CharacterSkill", b =>

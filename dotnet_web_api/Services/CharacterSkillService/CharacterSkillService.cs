@@ -43,7 +43,7 @@ namespace dotnet_web_api.Services.CharacterSkillService
                 Character dbCharacter = await _db.Characters.Include(w => w.Weapon)
                     .Include(cs => cs.CharacterSkills)
                     .ThenInclude(s => s.Skill)
-                    .FirstOrDefaultAsync(c => c.Id == newCharacterSkill.CharacterId && c.Users.Id == GetUserId());
+                    .FirstOrDefaultAsync(c => c.Id == newCharacterSkill.CharacterId && c.User.Id == GetUserId());
 
                 if (dbCharacter == null)
                 {

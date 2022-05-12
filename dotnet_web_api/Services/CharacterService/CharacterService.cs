@@ -41,10 +41,10 @@ namespace dotnet_web_api.Services.CharacterService
         {
             ServiceResponse<List<GetCharacterDto>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             Character character = _mapper.Map<Character>(newCharacter);
-            character.Users = await _db.Users.FirstOrDefaultAsync(u => u.Id.Equals(GetUserId()));
+            character.User = await _db.Users.FirstOrDefaultAsync(u => u.Id.Equals(GetUserId()));
             await _db.Characters.AddAsync(character);
             await _db.SaveChangesAsync();
-            serviceResponse.Data = (_db.Characters.Where(c => c.Users.Id.Equals(GetUserId())).Select(c =>  _mapper.Map<GetCharacterDto>(c))).ToList();
+            serviceResponse.Data = (_db.Characters.Where(c => c.User.Id.Equals(GetUserId())).Select(c =>  _mapper.Map<GetCharacterDto>(c))).ToList();
             serviceResponse.Message = "Added Successfully";
             return serviceResponse;
         }
@@ -56,7 +56,7 @@ namespace dotnet_web_api.Services.CharacterService
             List<Character> dbCharacters =
                 GetUserRole().Equals("Admin") ? 
                     await _db.Characters.ToListAsync() :
-                    await _db.Characters.Where(x => x.Users.Username == GetUsername()).ToListAsync();
+                    await _db.Characters.Where(x => x.User.Username == GetUsername()).ToListAsync();
             serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             serviceResponse.Message = "Successfully fetched all characters";
             return serviceResponse;
@@ -71,7 +71,7 @@ namespace dotnet_web_api.Services.CharacterService
                 .Include(w => w.Weapon)
                 .Include(cs => cs.CharacterSkills)
                 .ThenInclude(s => s.Skill)
-                .FirstOrDefaultAsync(c => c.Id == id && c.Users.Id == GetUserId());
+                .FirstOrDefaultAsync(c => c.Id == id && c.User.Id == GetUserId());
             serviceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter);
             serviceResponse.Message = "Successfully fetch single character";
             return serviceResponse;
@@ -84,11 +84,11 @@ namespace dotnet_web_api.Services.CharacterService
             ServiceResponse<GetCharacterDto> serviceResponse = new ServiceResponse<GetCharacterDto>();
             try
             {
-                Character character = await _db.Characters.Include(u => u.Users).
-                    FirstOrDefaultAsync(c => c.Id == updateCharacter.Id && c.Users.Id.Equals(GetUserId()));
+                Character character = await _db.Characters.Include(u => u.User).
+                    FirstOrDefaultAsync(c => c.Id == updateCharacter.Id && c.User.Id.Equals(GetUserId()));
 
 
-                if (character.Users.Id.Equals(GetUserId()))
+                if (character.User.Id.Equals(GetUserId()))
                 {
                     character.Name = updateCharacter.Name;
                     character.Class = updateCharacter.Class;
@@ -128,13 +128,13 @@ namespace dotnet_web_api.Services.CharacterService
             ServiceResponse<List<GetCharacterDto>> serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             try
             {
-                Character character = await _db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.Users.Id.Equals(GetUserId()));
+                Character character = await _db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.User.Id.Equals(GetUserId()));
 
                 if (character != null)
                 {
                     _db.Characters.Remove(character);
                     await _db.SaveChangesAsync();
-                    serviceResponse.Data = _db.Characters.Where(u => u.Users.Id == GetUserId()).Select(x => _mapper.Map<GetCharacterDto>(x)).ToList();
+                    serviceResponse.Data = _db.Characters.Where(u => u.User.Id == GetUserId()).Select(x => _mapper.Map<GetCharacterDto>(x)).ToList();
                 }
                 else
                 {
