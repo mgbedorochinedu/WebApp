@@ -37,7 +37,8 @@ namespace dotnet_web_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(x =>
-                x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                x.UseSqlite(Configuration.GetConnectionString("SqliteConnection")));
+            //x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<ICharacterService, CharacterService>();
